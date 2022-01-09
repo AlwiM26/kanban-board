@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import './AddModal.css';
 
@@ -16,12 +16,18 @@ const AddModal = ({ showModal, setShowModal, handleAddTask, categoryId }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    handleAddTask(categoryId, formValues);
-    setShowModal(!showModal);
-    setFormValues({
-      issue_id: uuidv4(), title: '', asignee: '', start_date: '', end_date: '', tags: '',
-    });
-    setFormErrors({});
+    let errors = validateForms();
+    if (Object.keys(errors).length === 0) {
+      handleAddTask(categoryId, formValues);
+      setShowModal(!showModal);
+      setFormValues({
+        issue_id: uuidv4(), title: '', asignee: '', start_date: '', end_date: '', tags: '',
+      });
+      setFormErrors({});
+    } else {
+      setFormErrors(validateForms);
+    }
+
   };
 
   const validateForms = () => {
@@ -36,12 +42,21 @@ const AddModal = ({ showModal, setShowModal, handleAddTask, categoryId }) => {
     return errors;
   }
 
+  const handleCloseModal = e => {
+    e.preventDefault();
+    setShowModal(!showModal);
+    setFormValues({
+      issue_id: uuidv4(), title: '', asignee: '', start_date: '', end_date: '', tags: '',
+    });
+    setFormErrors({});
+  }
+
   return (
     <div className={showModal ? "modalContainer active" : "modalContainer"}>
       <div className="modalCard">
         <div className="topModalContainer">
           <h2>New Task</h2>
-          <button className="btnCloseModal" onClick={() => setShowModal(!showModal)}>
+          <button className="btnCloseModal" onClick={e => handleCloseModal(e)}>
             <i className="fas fa-times" />
           </button>
         </div>
@@ -49,28 +64,28 @@ const AddModal = ({ showModal, setShowModal, handleAddTask, categoryId }) => {
           <div className="modalFormContainer">
             <div className="inputItem">
               <label className="inputLabel">Title</label>
-              <input className="inputForm" type="text" name="title" onChange={handleChange} />
-              <p className="errorMsg">{formErrors.consigneeNumber}</p>
+              <input className="inputForm" type="text" name="title" onChange={handleChange} value={formValues.title} />
+              <p className="errorMsg">{formErrors.title}</p>
             </div>
             <div className="inputItem">
               <label className="inputLabel">Tags</label>
-              <input className="inputForm" type="text" name="tags" onChange={handleChange} />
-              <p className="errorMsg">{formErrors.consigneeNumber}</p>
+              <input className="inputForm" type="text" name="tags" onChange={handleChange} value={formValues.tags} />
+              <p className="errorMsg">{formErrors.tags}</p>
             </div>
             <div className="inputItem">
               <label className="inputLabel">Asignee</label>
-              <input className="inputForm" type="text" name="asignee" onChange={handleChange} />
-              <p className="errorMsg">{formErrors.consigneeNumber}</p>
+              <input className="inputForm" type="text" name="asignee" onChange={handleChange} value={formValues.asignee} />
+              <p className="errorMsg">{formErrors.asignee}</p>
             </div>
             <div className="inputItem">
               <label className="inputLabel">Start Date</label>
-              <input className="inputForm" type="date" name="start_date" onChange={handleChange} />
-              <p className="errorMsg">{formErrors.consigneeNumber}</p>
+              <input className="inputForm" type="date" name="start_date" onChange={handleChange} value={formValues.start_date} />
+              <p className="errorMsg">{formErrors.start_date}</p>
             </div>
             <div className="inputItem">
               <label className="inputLabel">End Date</label>
-              <input className="inputForm" type="date" name="end_date" onChange={handleChange} />
-              <p className="errorMsg">{formErrors.consigneeNumber}</p>
+              <input className="inputForm" type="date" name="end_date" onChange={handleChange} value={formValues.end_date} />
+              <p className="errorMsg">{formErrors.end_date}</p>
             </div>
             <input className="btnAdd" type="submit" value="Add" onClick={handleSubmit} />
           </div>

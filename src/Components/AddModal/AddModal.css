@@ -41,7 +41,7 @@
 .inputItem {
   display: flex;
   flex-direction: column;
-  margin: 10px 0;
+  margin: 5px 0;
 }
 
 .inputLabel {

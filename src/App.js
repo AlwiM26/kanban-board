@@ -8,18 +8,11 @@ const App = () => {
   const [data, setData] = useState([
     {
       category: 'Backlog',
-      tasks: [
-        { issue_id: uuidv4(), title: 'aCreate API to load user info from database', asignee: 'Alwi Muhammad', tags: 'Design' },
-        { issue_id: uuidv4(), title: 'bCreate API to load user info from database', asignee: 'Alwi Muhammad', tags: 'Design' },
-        { issue_id: uuidv4(), title: 'cCreate API to load user info from database', asignee: 'Alwi Muhammad', tags: 'Design' },
-        { issue_id: uuidv4(), title: 'dCreate API to load user info from database', asignee: 'Alwi Muhammad', tags: 'Design' },
-      ],
+      tasks: [],
     },
     {
       category: 'To Do',
-      tasks: [
-        { issue_id: uuidv4(), title: 'eCreate API to load user info from database', asignee: 'Alwi Muhammad', tags: 'Design' }
-      ],
+      tasks: [],
     },
     {
       category: 'Done',
@@ -97,7 +90,7 @@ const App = () => {
                 >
                   <div className="topTaskContainer">
                     <h2>{category.category}</h2>
-                    <button className='btnAddTask' onClick={() => handleModal(id)}>+ Add Task</button>
+                    <button className='btnAddTask' onClick={() => handleModal(id)}><i className='fas fa-plus' /> Add Task</button>
                   </div>
                   <div className="bottomTaskContainer">
                     {category.tasks.map((task, id) => (
