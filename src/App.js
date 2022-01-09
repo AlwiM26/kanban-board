@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from 'uuid';
 import './App.css';
+import AddModal from './Components/AddModal/AddModal';
 
 const App = () => {
   const [data, setData] = useState([
@@ -26,6 +27,7 @@ const App = () => {
     }
   ]);
   const [showModal, setShowModal] = useState(false);
+  const [categoryId, setCategoryId] = useState();
 
   const handleOnDragEnd = result => {
     if (!result.destination) return;
@@ -61,6 +63,21 @@ const App = () => {
     }
   }
 
+  const handleAddTask = (categoryId, formValues) => {
+    const category = data[categoryId];
+    category.tasks.push(formValues);
+
+    const newData = [...data];
+    newData[categoryId] = category;
+
+    setData(newData);
+  }
+
+  const handleModal = categoryId => {
+    setShowModal(!showModal);
+    setCategoryId(categoryId);
+  }
+
   return (
     <div className="mainContainer">
       <div className="headerContainer">
@@ -80,7 +97,7 @@ const App = () => {
                 >
                   <div className="topTaskContainer">
                     <h2>{category.category}</h2>
-                    <button className='btnAddTask'>+ Add Task</button>
+                    <button className='btnAddTask' onClick={() => handleModal(id)}>+ Add Task</button>
                   </div>
                   <div className="bottomTaskContainer">
                     {category.tasks.map((task, id) => (
@@ -113,39 +130,7 @@ const App = () => {
           ))}
         </DragDropContext>
       </div>
-      <div className="modalContainer">
-        <div className="modalCard">
-          <div className="topModalContainer">
-            <h2>New Task</h2>
-            <i className="fas fa-times"></i>
-          </div>
-          <form>
-            <div className="modalFormContainer">
-              <div className="inputItem">
-                <label className="inputLabel">Title</label>
-                <input className="inputForm" type="text" name="title" />
-              </div>
-              <div className="inputItem">
-                <label className="inputLabel">Tags</label>
-                <input className="inputForm" type="text" name="tags" />
-              </div>
-              <div className="inputItem">
-                <label className="inputLabel">Asignee</label>
-                <input className="inputForm" type="text" name="asignee" />
-              </div>
-              <div className="inputItem">
-                <label className="inputLabel">Start Date</label>
-                <input className="inputForm" type="date" name="startDate" />
-              </div>
-              <div className="inputItem">
-                <label className="inputLabel">End Date</label>
-                <input className="inputForm" type="date" name="endDate" />
-              </div>
-              <input className="btnAdd" type="submit" value="Add" />
-            </div>
-          </form>
-        </div>
-      </div>
+      <AddModal showModal={showModal} setShowModal={setShowModal} handleAddTask={handleAddTask} categoryId={categoryId} />
     </div >
   );
 };
