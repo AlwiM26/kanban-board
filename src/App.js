@@ -25,6 +25,7 @@ const App = () => {
       tasks: [],
     }
   ]);
+  const [showModal, setShowModal] = useState(false);
 
   const handleOnDragEnd = result => {
     if (!result.destination) return;
@@ -111,6 +112,39 @@ const App = () => {
             </Droppable>
           ))}
         </DragDropContext>
+      </div>
+      <div className="modalContainer">
+        <div className="modalCard">
+          <div className="topModalContainer">
+            <h2>New Task</h2>
+            <i className="fas fa-times"></i>
+          </div>
+          <form>
+            <div className="modalFormContainer">
+              <div className="inputItem">
+                <label className="inputLabel">Title</label>
+                <input className="inputForm" type="text" name="title" />
+              </div>
+              <div className="inputItem">
+                <label className="inputLabel">Tags</label>
+                <input className="inputForm" type="text" name="tags" />
+              </div>
+              <div className="inputItem">
+                <label className="inputLabel">Asignee</label>
+                <input className="inputForm" type="text" name="asignee" />
+              </div>
+              <div className="inputItem">
+                <label className="inputLabel">Start Date</label>
+                <input className="inputForm" type="date" name="startDate" />
+              </div>
+              <div className="inputItem">
+                <label className="inputLabel">End Date</label>
+                <input className="inputForm" type="date" name="endDate" />
+              </div>
+              <input className="btnAdd" type="submit" value="Add" />
+            </div>
+          </form>
+        </div>
       </div>
     </div >
   );
