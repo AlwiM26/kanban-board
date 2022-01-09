@@ -1,24 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { v4 as uuidv4 } from 'uuid';
 import './App.css';
 import AddModal from './Components/AddModal/AddModal';
 
 const App = () => {
-  const [data, setData] = useState([
-    {
-      category: 'Backlog',
-      tasks: [],
-    },
-    {
-      category: 'To Do',
-      tasks: [],
-    },
-    {
-      category: 'Done',
-      tasks: [],
-    }
-  ]);
+  const [data, setData] = useState(() => {
+    const savedData = JSON.parse(localStorage.getItem('data'));
+    return savedData ? savedData : [
+      {
+        category: 'Backlog',
+        tasks: [],
+      },
+      {
+        category: 'To Do',
+        tasks: [],
+      },
+      {
+        category: 'Done',
+        tasks: [],
+      }
+    ];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('data', JSON.stringify(data));
+  }, [data]);
+
   const [showModal, setShowModal] = useState(false);
   const [categoryId, setCategoryId] = useState();
 
@@ -64,6 +71,7 @@ const App = () => {
     newData[categoryId] = category;
 
     setData(newData);
+    localStorage.setItem('data', JSON.stringify(data));
   }
 
   const handleModal = categoryId => {
@@ -93,27 +101,38 @@ const App = () => {
                     <button className='btnAddTask' onClick={() => handleModal(id)}><i className='fas fa-plus' /> Add Task</button>
                   </div>
                   <div className="bottomTaskContainer">
-                    {category.tasks.map((task, id) => (
-                      <Draggable
-                        key={task.issue_id}
-                        draggableId={task.issue_id}
-                        index={id}
-                      >
-                        {(provided, snapshot) => (
-                          <div
-                            className="itemContainer"
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            style={provided.draggableProps.style}
-                            ref={provided.innerRef}
-                          >
-                            <div className="topItemContainer">{task.title}</div>
-                            <div className="bottomItemContainer">
+                    {category.tasks.map((task, id) => {
+                      const startDate = new Date(task.start_date).getTime();
+                      const endDate = new Date(task.end_date).getTime();
+                      const diff = Math.abs(endDate - startDate);
+                      const dayLeft = Math.ceil(diff / (1000 * 3600 * 24));
+
+                      return (
+                        <Draggable
+                          key={task.issue_id}
+                          draggableId={task.issue_id}
+                          index={id}
+                        >
+                          {(provided, snapshot) => (
+                            <div
+                              className="itemContainer"
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              style={provided.draggableProps.style}
+                              ref={provided.innerRef}
+                            >
+                              <div className="topItemContainer">
+                                <h2>{task.title}</h2>
+                              </div>
+                              <div className="bottomItemContainer">
+                                <p className='tags'>{task.tags}</p>
+                                <p className='daysLeft'>{dayLeft} days</p>
+                              </div>
                             </div>
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
+                          )}
+                        </Draggable>
+                      );
+                    })}
                   </div>
                   {provided.placeholder}
                 </div>
